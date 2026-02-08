@@ -18,6 +18,12 @@ from pathlib import Path
 
 import yaml
 
+try:
+    import akshare as ak
+    HAS_AKSHARE = True
+except ImportError:
+    HAS_AKSHARE = False
+
 # ============================================================
 # 配置加载
 # ============================================================
@@ -34,41 +40,78 @@ def load_config():
 
 
 # ============================================================
-# 天天基金数据抓取
+# 数据抓取（AKShare 优先，天天基金 API 兜底）
 # ============================================================
 
-def fetch_nav_history(fund_code: str, days: int = 300) -> list[dict]:
+def _fetch_nav_history_akshare(fund_code: str, days: int = 300) -> list[dict]:
     """
-    从天天基金抓取历史净值。
+    通过 AKShare 抓取历史净值（单次调用，无需分页）。
     返回 [{"date": "2025-01-01", "nav": 1.2345}, ...] 按日期升序。
     """
-    url = (
-        f"https://api.fund.eastmoney.com/f10/lsjz?"
-        f"fundCode={fund_code}&pageIndex=1&pageSize={days}"
-    )
+    df = ak.fund_open_fund_info_em(symbol=fund_code, indicator="单位净值走势")
+    records = [
+        {"date": str(row["净值日期"]), "nav": float(row["单位净值"])}
+        for _, row in df.iterrows()
+    ]
+    return records[-days:]  # 已按日期升序，取最近 days 条
+
+
+def _fetch_nav_history_eastmoney(fund_code: str, days: int = 300) -> list[dict]:
+    """
+    从天天基金 API 分页抓取历史净值（兜底方案）。
+    返回 [{"date": "2025-01-01", "nav": 1.2345}, ...] 按日期升序。
+    API每页固定返回20条，需分页抓取。
+    """
     headers = {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36",
         "Referer": "https://fundf10.eastmoney.com/",
     }
-    req = urllib.request.Request(url, headers=headers)
+    per_page = 20
+    total_pages = (days + per_page - 1) // per_page
+    records = []
+
     try:
-        with urllib.request.urlopen(req, timeout=15) as resp:
-            raw = resp.read().decode("utf-8")
-        data = json.loads(raw)
-        records = []
-        for item in data.get("Data", {}).get("LSJZList", []):
-            date_str = item.get("FSRQ", "")
-            nav_str = item.get("DWJZ", "")
-            if date_str and nav_str:
-                try:
-                    records.append({"date": date_str, "nav": float(nav_str)})
-                except ValueError:
-                    continue
+        for page in range(1, total_pages + 1):
+            url = (
+                f"https://api.fund.eastmoney.com/f10/lsjz?"
+                f"fundCode={fund_code}&pageIndex={page}&pageSize={per_page}"
+            )
+            req = urllib.request.Request(url, headers=headers)
+            with urllib.request.urlopen(req, timeout=15) as resp:
+                raw = resp.read().decode("utf-8")
+            data = json.loads(raw)
+            items = (data.get("Data") or {}).get("LSJZList", [])
+            if not items:
+                break
+            for item in items:
+                date_str = item.get("FSRQ", "")
+                nav_str = item.get("DWJZ", "")
+                if date_str and nav_str:
+                    try:
+                        records.append({"date": date_str, "nav": float(nav_str)})
+                    except ValueError:
+                        continue
+            if len(records) >= days:
+                break
+            time.sleep(0.3)
         records.reverse()  # 升序
         return records
     except Exception as e:
-        print(f"  [ERROR] 抓取 {fund_code} 失败: {e}")
+        print(f"  [ERROR] Eastmoney API 抓取 {fund_code} 失败: {e}")
         return []
+
+
+def fetch_nav_history(fund_code: str, days: int = 300) -> list[dict]:
+    """
+    抓取历史净值：优先 AKShare，失败则回退到天天基金 API。
+    返回 [{"date": "2025-01-01", "nav": 1.2345}, ...] 按日期升序。
+    """
+    if HAS_AKSHARE:
+        try:
+            return _fetch_nav_history_akshare(fund_code, days)
+        except Exception as e:
+            print(f"  [WARN] AKShare 抓取 {fund_code} 失败，回退到 Eastmoney API: {e}")
+    return _fetch_nav_history_eastmoney(fund_code, days)
 
 
 def fetch_current_nav(fund_code: str) -> tuple[str, float] | None:
