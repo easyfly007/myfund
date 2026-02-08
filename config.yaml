@@ -1,0 +1,300 @@
+# ============================================================
+# 全球分散化基金监控配置
+# ============================================================
+
+# --- 邮件通知配置 ---
+email:
+  enabled: true
+  smtp_server: "smtp.qq.com"        # QQ邮箱示例，也可用 smtp.163.com / smtp.gmail.com
+  smtp_port: 465                     # SSL端口，TLS用587
+  use_ssl: true
+  sender: "your_email@qq.com"        # ← 改成你的发件邮箱
+  password: "your_app_password"      # ← 改成邮箱授权码（非登录密码）
+  receiver: "your_email@qq.com"      # ← 改成收件邮箱
+
+# --- 策略参数 ---
+strategy:
+  # 均线天数（交易日）
+  ma_days: 250
+
+  # 按波动等级设定阈值
+  # low:  债券/固收类 → 不参与择时
+  # mid:  宽基指数、黄金
+  # high: 行业/主题、单国市场、原油
+  thresholds:
+    mid:
+      buy_pct: -15       # 低于250日均线15%触发买入
+      sell_pct: 30        # 高于250日均线30%触发卖出
+    high:
+      buy_pct: -20        # 低于250日均线20%触发买入
+      sell_pct: 40        # 高于250日均线40%触发卖出
+
+  # 冷却期（自然日）
+  buy_cooldown_days: 30
+  sell_cooldown_days: 30
+
+  # 冷却期突破：在冷却期内若偏离又扩大此幅度，可突破冷却
+  cooldown_override_extra_pct: 10
+
+  # 超跌加仓：配额满后，相比上次买入净值又跌此幅度，可额外买入1份（每基金仅1次机会）
+  extra_drop_pct: -20
+
+# --- 基金列表 ---
+# volatility: low / mid / high
+# max_shares: 该基金最大配额份数（常规共50份）
+# category: 分类标签（用于报告分组）
+funds:
+  # ========== 一、美国股市（12份） ==========
+  # 标普500 ×3
+  - code: "050025"
+    name: "博时标普500ETF联接A"
+    category: "美国-标普500"
+    volatility: mid
+    max_shares: 2
+
+  - code: "017170"
+    name: "摩根标普500ETF联接A"
+    category: "美国-标普500"
+    volatility: mid
+    max_shares: 1
+
+  # 纳斯达克100 ×3
+  - code: "270042"
+    name: "广发纳斯达克100ETF联接A"
+    category: "美国-纳斯达克"
+    volatility: high
+    max_shares: 2
+
+  - code: "012869"
+    name: "易方达纳斯达克100ETF联接A"
+    category: "美国-纳斯达克"
+    volatility: high
+    max_shares: 1
+
+  # 科技 ×3
+  - code: "161128"
+    name: "易方达标普信息科技A(LOF)"
+    category: "美国-科技"
+    volatility: high
+    max_shares: 2
+
+  - code: "017091"
+    name: "景顺长城纳斯达克科技ETF联接A"
+    category: "美国-科技"
+    volatility: high
+    max_shares: 1
+
+  # 道琼斯 ×1
+  - code: "270048"
+    name: "大成道琼斯工业平均指数A(LOF)"
+    category: "美国-道琼斯"
+    volatility: mid
+    max_shares: 1
+
+  # 消费 ×1
+  - code: "162415"
+    name: "华宝标普美国消费A(LOF)"
+    category: "美国-消费"
+    volatility: high
+    max_shares: 1
+
+  # 全球科技 ×1
+  - code: "100055"
+    name: "富国全球科技互联网股票A"
+    category: "美国-全球科技"
+    volatility: high
+    max_shares: 1
+
+  # ========== 二、港股市场（5份） ==========
+  - code: "000071"
+    name: "华夏恒生ETF联接A"
+    category: "港股-恒生指数"
+    volatility: mid
+    max_shares: 1
+
+  - code: "013403"
+    name: "华夏恒生科技ETF联接A"
+    category: "港股-恒生科技"
+    volatility: high
+    max_shares: 2
+
+  - code: "006327"
+    name: "易方达中概互联网ETF联接A"
+    category: "港股-中概互联"
+    volatility: high
+    max_shares: 1
+
+  - code: "110031"
+    name: "易方达恒生中国企业ETF联接A"
+    category: "港股-H股"
+    volatility: mid
+    max_shares: 1
+
+  # ========== 三、日本股市（3份） ==========
+  - code: "020712"
+    name: "华安日经225ETF联接A"
+    category: "日本-日经225"
+    volatility: mid
+    max_shares: 2
+
+  - code: "019892"
+    name: "南方东证指数ETF联接A"
+    category: "日本-东证指数"
+    volatility: mid
+    max_shares: 1
+
+  # ========== 四、欧洲股市（3份） ==========
+  - code: "000614"
+    name: "华安德国DAX联接A"
+    category: "欧洲-德国DAX"
+    volatility: mid
+    max_shares: 2
+
+  - code: "019978"
+    name: "华安法国CAC40ETF联接A"
+    category: "欧洲-法国CAC40"
+    volatility: mid
+    max_shares: 1
+
+  # ========== 五、新兴市场（2份） ==========
+  - code: "006105"
+    name: "宏利印度股票A(QDII)"
+    category: "新兴-印度"
+    volatility: high
+    max_shares: 1
+
+  - code: "008763"
+    name: "天弘越南市场股票A(QDII)"
+    category: "新兴-越南"
+    volatility: high
+    max_shares: 1
+
+  # ========== 六、A股宽基指数（8份） ==========
+  - code: "110020"
+    name: "易方达沪深300ETF联接A"
+    category: "A股-沪深300"
+    volatility: mid
+    max_shares: 2
+
+  - code: "022437"
+    name: "华泰柏瑞中证A500ETF联接A"
+    category: "A股-中证A500"
+    volatility: mid
+    max_shares: 2
+
+  - code: "160119"
+    name: "南方中证500ETF联接A"
+    category: "A股-中证500"
+    volatility: mid
+    max_shares: 1
+
+  - code: "001051"
+    name: "华夏上证50ETF联接A"
+    category: "A股-上证50"
+    volatility: mid
+    max_shares: 1
+
+  - code: "011612"
+    name: "华夏科创50ETF联接A"
+    category: "A股-科创50"
+    volatility: high
+    max_shares: 1
+
+  - code: "110026"
+    name: "易方达创业板ETF联接A"
+    category: "A股-创业板"
+    volatility: high
+    max_shares: 1
+
+  # ========== 七、A股行业/主题（7份） ==========
+  - code: "161726"
+    name: "招商国证生物医药指数A(LOF)"
+    category: "A股行业-医药"
+    volatility: high
+    max_shares: 1
+
+  - code: "000248"
+    name: "汇添富中证主要消费ETF联接A"
+    category: "A股行业-消费"
+    volatility: high
+    max_shares: 1
+
+  - code: "007300"
+    name: "国泰中证半导体ETF联接A"
+    category: "A股行业-半导体"
+    volatility: high
+    max_shares: 1
+
+  - code: "003984"
+    name: "嘉实新能源新材料股票A"
+    category: "A股行业-新能源"
+    volatility: high
+    max_shares: 1
+
+  - code: "012174"
+    name: "富国中证军工龙头ETF联接A"
+    category: "A股行业-军工"
+    volatility: high
+    max_shares: 1
+
+  - code: "017837"
+    name: "华夏中证人工智能ETF联接A"
+    category: "A股行业-AI"
+    volatility: high
+    max_shares: 1
+
+  - code: "100032"
+    name: "富国中证红利指数增强A"
+    category: "A股行业-红利"
+    volatility: mid
+    max_shares: 1
+
+  # ========== 八、商品类（4份） ==========
+  - code: "000216"
+    name: "华安黄金ETF联接A"
+    category: "商品-黄金"
+    volatility: mid
+    max_shares: 2
+
+  - code: "501018"
+    name: "南方原油A(QDII-FOF)"
+    category: "商品-原油"
+    volatility: high
+    max_shares: 1
+
+  - code: "160416"
+    name: "华安标普全球石油指数A(LOF)"
+    category: "商品-全球石油"
+    volatility: high
+    max_shares: 1
+
+  # ========== 九、债券/固收（6份，不参与择时） ==========
+  - code: "003547"
+    name: "富国中债7-10年政金债A"
+    category: "债券-国债"
+    volatility: low
+    max_shares: 2
+
+  - code: "050011"
+    name: "博时信用债券A"
+    category: "债券-信用债"
+    volatility: low
+    max_shares: 1
+
+  - code: "519977"
+    name: "长信可转债A"
+    category: "债券-可转债"
+    volatility: low
+    max_shares: 1
+
+  - code: "050030"
+    name: "博时亚洲票息收益债券A"
+    category: "债券-美元债"
+    volatility: low
+    max_shares: 1
+
+  - code: "070009"
+    name: "嘉实超短债A"
+    category: "债券-短债"
+    volatility: low
+    max_shares: 1
