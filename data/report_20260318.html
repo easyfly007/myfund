@@ -1,0 +1,111 @@
+
+    <html><head><style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .container { max-width: 800px; margin: 0 auto; background: #fff; border-radius: 8px;
+                      box-shadow: 0 2px 8px rgba(0,0,0,0.1); padding: 24px; }
+        h1 { color: #2F5496; border-bottom: 2px solid #2F5496; padding-bottom: 8px; font-size: 20px; }
+        h2 { color: #4472C4; font-size: 16px; margin-top: 24px; }
+        .summary { display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap; }
+        .card { background: #f8f9fa; border-radius: 6px; padding: 12px 18px; min-width: 120px;
+                 border-left: 4px solid #4472C4; }
+        .card.buy { border-left-color: #00B050; }
+        .card.sell { border-left-color: #FF0000; }
+        .card .num { font-size: 24px; font-weight: bold; }
+        .card .label { font-size: 12px; color: #666; }
+        table { border-collapse: collapse; width: 100%; margin: 12px 0; font-size: 13px; }
+        th { background: #2F5496; color: #fff; padding: 8px 10px; text-align: left; }
+        td { padding: 6px 10px; border-bottom: 1px solid #e0e0e0; }
+        tr:hover { background: #f0f4fa; }
+        .tag { display: inline-block; padding: 2px 8px; border-radius: 10px;
+                font-size: 11px; font-weight: bold; }
+        .tag-buy { background: #e6f4ea; color: #137333; }
+        .tag-sell { background: #fce8e6; color: #c5221f; }
+        .tag-hold { background: #e8eaed; color: #5f6368; }
+        .tag-exec { background: #d2e3fc; color: #1a73e8; }
+        .blocked { color: #999; font-size: 11px; }
+        .pos { color: #00B050; }
+        .neg { color: #FF0000; }
+        .footer { margin-top: 20px; padding-top: 12px; border-top: 1px solid #e0e0e0;
+                   font-size: 11px; color: #999; }
+    </style></head><body>
+    <div class="container">
+    <h1>📊 基金监控日报 — 2026-03-18 23:19</h1>
+
+    <div class="summary">
+        <div class="card buy"><div class="num">0</div><div class="label">执行买入</div></div>
+        <div class="card sell"><div class="num">0</div><div class="label">执行卖出</div></div>
+        <div class="card"><div class="num">0</div><div class="label">买入信号</div></div>
+        <div class="card"><div class="num">1</div><div class="label">卖出信号</div></div>
+    </div>
+    
+        <h2>🔔 今日信号</h2>
+        <table>
+        <tr><th>信号</th><th>执行</th><th>基金</th><th>类别</th>
+            <th>净值</th><th>MA250</th><th>偏离</th><th>持仓</th><th>说明</th></tr>
+        
+            <tr>
+                <td><span class="tag tag-sell">🔴 卖出</span></td>
+                <td><span class="tag tag-hold">❌ 阻止</span></td>
+                <td><b>501018</b><br>南方原油A(QDII-FOF)</td>
+                <td>商品-原油</td>
+                <td>1.7448</td>
+                <td>1.1971</td>
+                <td class="pos">+45.8%</td>
+                <td>0/1</td>
+                <td style="font-size:11px">偏离 +45.8% ≥ +40%<br><span class="blocked">⛔ 无持仓可卖</span></td>
+            </tr></table>
+        <h2>📋 当前持仓概览</h2>
+        <table>
+        <tr><th>基金</th><th>类别</th><th>净值</th><th>常规持仓</th><th>额外</th><th>成本</th><th>盈亏</th></tr>
+        
+            <tr>
+                <td><b>003547</b> 富国中债7-10年政金债A</td>
+                <td>债券-国债</td>
+                <td>1.0498</td>
+                <td>2/2</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="">-</td>
+            </tr>
+            <tr>
+                <td><b>050011</b> 博时信用债券A</td>
+                <td>债券-信用债</td>
+                <td>3.8330</td>
+                <td>1/1</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="">-</td>
+            </tr>
+            <tr>
+                <td><b>519977</b> 长信可转债A</td>
+                <td>债券-可转债</td>
+                <td>2.0138</td>
+                <td>1/1</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="">-</td>
+            </tr>
+            <tr>
+                <td><b>050030</b> 博时亚洲票息收益债券A</td>
+                <td>债券-美元债</td>
+                <td>1.4955</td>
+                <td>1/1</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="">-</td>
+            </tr>
+            <tr>
+                <td><b>070009</b> 嘉实超短债A</td>
+                <td>债券-短债</td>
+                <td>1.0543</td>
+                <td>1/1</td>
+                <td>-</td>
+                <td>-</td>
+                <td class="">-</td>
+            </tr></table>
+    <div class="footer">
+        此邮件由基金监控系统自动发送 | 数据来源：天天基金 | 仅供参考，不构成投资建议<br>
+        策略参数：MA250日均线 | 冷却期：买卖均30天
+    </div>
+    </div></body></html>
+    

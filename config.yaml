@@ -24,10 +24,10 @@ strategy:
   thresholds:
     mid:
       buy_pct: -15       # 低于250日均线15%触发买入
-      sell_pct: 30        # 高于250日均线30%触发卖出
+      sell_pct: 25        # 高于250日均线25%触发卖出
     high:
-      buy_pct: -20        # 低于250日均线20%触发买入
-      sell_pct: 40        # 高于250日均线40%触发卖出
+      buy_pct: -15        # 低于250日均线15%触发买入
+      sell_pct: 25        # 高于250日均线25%触发卖出
 
   # 冷却期（自然日）
   buy_cooldown_days: 30
@@ -240,6 +240,12 @@ funds:
   - code: "017837"
     name: "华夏中证人工智能ETF联接A"
     category: "A股行业-AI"
+    volatility: high
+    max_shares: 1
+
+  - code: "001064"
+    name: "广发中证环保ETF联接A"
+    category: "A股行业-环保"
     volatility: high
     max_shares: 1
 
